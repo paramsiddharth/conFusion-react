@@ -54,6 +54,6 @@ const Dishdetail = props => {
 	}
 	
 	return <div></div>;
-}
+};
 
 export default Dishdetail;
