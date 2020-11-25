@@ -21,9 +21,11 @@ class CommentForm extends Component {
 	toggleModal() { this.setState({ isModalOpen: !this.state.isModalOpen }); }
 
 	handleSubmit(values) {
-		let stateMessage = `Current State is: ${JSON.stringify(values)}`;
-        console.log(stateMessage);
-        alert(stateMessage);
+		// let stateMessage = `Current State is: ${JSON.stringify(values)}`;
+        // console.log(stateMessage);
+		// alert(stateMessage);
+		// alert(JSON.stringify(values));
+		this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
 		this.toggleModal();
 	}
 
@@ -51,15 +53,15 @@ class CommentForm extends Component {
 							</Row>
 							<Row className='form-group'>
 								<Col md={12}>
-									<Label htmlFor='name'>Your Name</Label>
-									<Control.text model='.name' id='name' 
-										name='name' className='form-control'
+									<Label htmlFor='author'>Your Name</Label>
+									<Control.text model='.author' id='author' 
+										name='author' className='form-control'
 										validators={{
 											minLength: minLength(3),
 											maxLength: maxLength(15)
 										}} />
 									<Errors className='text-danger'
-										model='.name'
+										model='.author'
 										show='touched'
 										messages={{
 											minLength: 'Must be at least 3 characters-long',
@@ -83,7 +85,7 @@ class CommentForm extends Component {
 	}
 }
 
-function RenderComments({comments}) {
+function RenderComments({ comments, addComment, dishId }) {
 	if (comments != null) {
 		let items = comments.map((comment) => (
 			<li key={comment.id}>
@@ -93,12 +95,13 @@ function RenderComments({comments}) {
 		));
 
 		return (
-			<div class='col-12 col-md-5 m-1'>
+			<div className='col-12 col-md-5 m-1'>
 				<h4>Comments</h4>
-				<ul class='list-unstyled'>
+				<ul className='list-unstyled'>
 					{items}
 				</ul>
-				<CommentForm comments={comments} />
+				<CommentForm comments={comments}
+					dishId={dishId} addComment={addComment} />
 			</div>
 		);
 	}
@@ -109,7 +112,7 @@ function RenderComments({comments}) {
 function RenderDish({dish}) {
 	if (dish != null) {
 		return (
-			<div class='col-12 col-md-5 m-1'>
+			<div className='col-12 col-md-5 m-1'>
 				<Card>
 					<CardImg src={dish.image} alt={dish.name}/>
 					<CardBody>
@@ -140,9 +143,11 @@ const Dishdetail = props => {
 					<h3>{props.dish.name}</h3>
 					<hr/>
 				</div>
-				<div class='row'>
+				<div className='row'>
 					<RenderDish dish={props.dish}/>
-					<RenderComments comments={props.comments}/>
+					<RenderComments comments={props.comments}
+						addComment={props.addComment}
+						dishId={props.dish.id} />
 				</div>
 			</div>
 		);
@@ -162,7 +167,7 @@ const Dishdetail = props => {
 				<h3>Invalid Dish</h3>
 				<hr/>
 			</div>
-			<div class='row'>
+			<div className='row'>
 				Invalid Dish!
 			</div>
 		</div>
