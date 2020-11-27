@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
 import { baseURL } from '../shared/baseurl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 // Validators
 const minLength = len => val => val?.length >= len;
@@ -90,17 +91,21 @@ class CommentForm extends Component {
 function RenderComments({ comments, postComment, dishId }) {
 	if (comments != null) {
 		let items = comments.map((comment) => (
-			<li key={comment.id}>
-				<p>{comment.comment}</p>
-				<p>– {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(Date.parse(comment.date))}</p>
-			</li>
+			<Fade in>
+				<li key={comment.id}>
+					<p>{comment.comment}</p>
+					<p>– {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(Date.parse(comment.date))}</p>
+				</li>
+			</Fade>
 		));
 
 		return (
 			<div className='col-12 col-md-5 m-1'>
 				<h4>Comments</h4>
 				<ul className='list-unstyled'>
-					{items}
+					<Stagger in>
+						{items}
+					</Stagger>
 				</ul>
 				<CommentForm comments={comments}
 					dishId={dishId} postComment={postComment} />
@@ -114,15 +119,20 @@ function RenderComments({ comments, postComment, dishId }) {
 function RenderDish({dish}) {
 	if (dish != null) {
 		return (
-			<div className='col-12 col-md-5 m-1'>
-				<Card>
-					<CardImg src={`${baseURL}/${dish.image}`} alt={dish.name}/>
-					<CardBody>
-						<CardTitle>{dish.name}</CardTitle>
-						<CardText>{dish.description}</CardText>
-					</CardBody>
-				</Card>
-			</div>
+			<FadeTransform in
+				transformProps={{
+					exitTransform: 'scale(0.5) translateY(-50%)'
+				}} >
+				<div className='col-12 col-md-5 m-1'>
+					<Card>
+						<CardImg src={`${baseURL}/${dish.image}`} alt={dish.name}/>
+						<CardBody>
+							<CardTitle>{dish.name}</CardTitle>
+							<CardText>{dish.description}</CardText>
+						</CardBody>
+					</Card>
+				</div>
+			</FadeTransform>
 		);
 	}
 
