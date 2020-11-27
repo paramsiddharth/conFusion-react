@@ -119,11 +119,11 @@ function RenderComments({ comments, postComment, dishId }) {
 function RenderDish({dish}) {
 	if (dish != null) {
 		return (
-			<FadeTransform in
+			<div className='col-12 col-md-5 m-1'>
+				<FadeTransform in
 				transformProps={{
 					exitTransform: 'scale(0.5) translateY(-50%)'
 				}} >
-				<div className='col-12 col-md-5 m-1'>
 					<Card>
 						<CardImg src={`${baseURL}/${dish.image}`} alt={dish.name}/>
 						<CardBody>
@@ -131,8 +131,8 @@ function RenderDish({dish}) {
 							<CardText>{dish.description}</CardText>
 						</CardBody>
 					</Card>
-				</div>
-			</FadeTransform>
+				</FadeTransform>
+			</div>
 		);
 	}
 
