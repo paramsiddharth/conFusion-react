@@ -40,6 +40,33 @@ export const postComment = (dishId, rating, author, comment) => dispatch => {
 		});
 };
 
+// (firstname, lastname, telnum, email, agree, contacttype, message)
+export const postFeedback = feedback => dispatch => {
+	return fetch(`${baseURL}/feedback`, {
+		method: 'POST',
+		body: JSON.stringify(feedback),
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		credentials: 'same-origin'
+	}).then(response => {
+		if (response.ok)
+			return response;
+		
+		let error = new Error(`Error: ${response.status}: ${response.statusText}`);
+		error.response = response;
+		throw error;
+	}, error => {
+		let errmess = new Error(error.message);
+		throw errmess;
+	}).then(response => response.json())
+		.then(response => alert(`Thank you for your feedback!\n${JSON.stringify(response)}`))
+		.catch(error => {
+			console.log(`Send feedback: ${error.message}`);
+			alert(`Your feedback could not be sent.\nError: ${error.message}`);
+		});
+};
+
 export const fetchDishes = () => dispatch => {
 	dispatch(dishesLoading(true));
 	
@@ -134,4 +161,38 @@ export const promosFailed = errmess => ({
 export const addPromos = promos => ({
 	type: ActionTypes.ADD_PROMOS,
 	payload: promos
+});
+
+export const fetchLeaders = () => dispatch => {
+	dispatch(leadersLoading(true));
+
+	return fetch(`${baseURL}/leaders`)
+		.then(response => {
+			if (response.ok)
+				return response;
+			
+			let error = new Error(`Error: ${response.status}: ${response.statusText}`);
+			error.response = response;
+			throw error;
+		}, error => {
+			let errmess = new Error(error);
+			throw errmess;
+		})
+		.then(response => response.json())
+		.then(leaders => dispatch(addLeaders(leaders)))
+		.catch(error => dispatch(leadersFailed(error)));
+};
+
+export const leadersLoading = () => ({
+	type: ActionTypes.LEADERS_LOADING
+});
+
+export const leadersFailed = errmess => ({
+	type: ActionTypes.LEADERS_FAILED,
+	payload: errmess
+});
+
+export const addLeaders = leaders => ({
+	type: ActionTypes.ADD_LEADERS,
+	payload: leaders
 });
